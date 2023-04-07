@@ -1,0 +1,99 @@
+from django.db import models
+from django.contrib.auth.models import User
+from news.models import *
+User.objects.create_user('Ivanov') 
+User.objects.create_user('Petrov') 
+
+Author.objects.create(user_id = 1) #Ivanov
+Author.objects.create(user_id = 2) #Petrov
+User.objects.create_user('Sidorov')
+
+Category.objects.create(category_name = 'автомобили')
+
+Category.objects.create(category_name = 'музыка')
+
+Category.objects.create(category_name = 'досуг')
+
+Category.objects.create(category_name = 'питомцы')
+
+Post.objects.create(title = 'Сузуки', text = 'Комфортные, удобные места для водителя и всех пассажиров. Очень вместительный салон. Быстрая, шустрая, манёвр
+енная машина как при езде по городу так и за городом. Достаточно высокий клиренс для маленького автомобиля (180 мм). Проходимость по снегу и грязи выше всяких 
+похвал ( в пределах нормальной глубины препятствий ). Очень яркий свет фар.', news_post = news,author_id = 2)
+
+
+Post.objects.create(title = 'История гитары', text = 'В самом широком смысле любая гитара  это хордофон, звук получается в результате колебаний струны,
+ натянутой между двумя точками. Такие изделия известны с древнейших времён. Они уже были в древнеегипетской цивилизации и даже раньше  в земледельческих
+ средиземноморских культурах медного и бронзового века. ', news_post = post,author_id = 2)
+
+Post.objects.create(title = 'котики', news_post = post , author_id =1 , text = 'В отличие от других домашних животных (особенно собак) кошки очень генетиче
+ски разнообразны, фактически схожи по разнообразию с дикими кошками. Несмотря на примерно 12 000 лет эволюции вместе с людьми, кошки в значительной степени сох
+ранили строение тела и способности диких кошек. Домашние кошки, как правило, всё еще способны находить себе еду и убежище в дикой природе.')
+
+присыаеваем категории
+
+post_1 = Post.objects.all()[0]
+
+category_1 = Category.objects.all()[0] # автомобили
+
+post_1.category.add(category_1)
+
+category_3 = Category.objects.all()[2] # досуг
+post_1.category.add(category_3)  
+
+теперь пост про сузуки в 2х категориях
+
+# музыка
+post_2 = Post.objects.all()[1] 
+category_2 = Category.objects.all()[1] 
+post_2.category.add(category_2) 
+# котики
+post_3 = Post.objects.all()[2] 
+category_4 = Category.objects.all()[3] 
+post_3.category.add(category_4) 
+
+Comment.objects.create(text = 'у меня тоже сузки', post_id = 1, user_id = 1) 
+Comment.objects.create(text = 'этоя писал про свою ласточку', post_id = 1, user_id = 2) 
+
+
+
+Comment.objects.create(text = 'играю на гитаре с 8 лет, даешь рок!!', post_id = 2, user_id = 3)
+Comment.objects.create(text = 'ненавижу ссаных котов!', post_id = 3, user_id = 3) 
+
+
+post_1.like()
+post_1.like()
+post_2.like() 
+post_3.dislike() 
+
+comment_1 = Comment.objects.all()[0]
+comment_1.like()
+comment_1.like()
+comment_1.like()
+comment_2 = Comment.objects.all()[1] 
+comment_2.like() 
+
+comment_3 = Comment.objects.all()[2] 
+comment_3.like() 
+
+comment_4 = Comment.objects.all()[3] 
+comment_4.dislike()                  
+comment_4.dislike()
+comment_4.dislike()
+
+author_1 = Author.objects.all()[0]
+author_2 = Author.objects.all()[1]
+author_1.update_rating()
+author_2.update_rating()
+
+Author.objects.all().order_by('-author_rating').values('user__username','author_rating')[0] 
+
+a = Post.objects.all().order_by('-post_rating').values('post_rating','time_in','title','author__user__username','id')[0]
+b = Post.objects.get(id = a['id']) 
+a
+b.preview()
+
+Comment.objects.filter(post =b).values('time_in','user__username', 'text','comment_rating') 
+
+
+
+
